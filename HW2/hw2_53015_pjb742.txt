@@ -1,0 +1,24 @@
+Homework #: 2
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+----------1.
+Processes that can only be run in kernel mode, NOT user mode
+- Halt the processor
+- Change the mode bit
+- Initiate an I/O operation
+
+----------2.
+If each process is running independently and not in need of another process in the background, allocate all the processor.
+Generally this would not be the best method though. If multiple tasks are ready to exectute at the same time and the user needs to multitask, allocating the CPU to run them at the same time would be best.
+Heavy processes should be started first with smaller processes being run in the background behind it and the heavy process taking the mojority of the CPU.
+This will allow for more important processes to run and finish at a similar(hopefully) time as the smaller processes.
+
+Physical memory should allocate the most memory to large/important processes while the smaller processes should be swapped in and out if there is not enough memory available for all the processes.
+
+----------3.
+
+

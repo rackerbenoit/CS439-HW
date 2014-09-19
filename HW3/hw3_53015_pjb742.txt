@@ -1,0 +1,111 @@
+Homework #: 3
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+----------1.
+
+One would want be fair to all programs by letting them all through with the same waiting time.
+But if the waiting time of a 1 second program is the same as the waiting time of a 1000 second program, fair does not work out very well.
+High throughput can also be bad since it may mean that longer jobs may never run at all/starve.
+
+----------2.
+
+Kernel level threads are managed by the OS through system calls
+Kernel level threads are scheduled by the OS and require context switching
+
+User level threads are managed by the user through library calls
+User level threads are scheduled by the user and do not require context switches
+
+----------3.
+
+Threads are interleaved and not always running in the same order. Due to race conditions.
+
+Code:
+
+#include <stdio.h>
+#include <pthread.h>
+
+void *thread(void *argp);
+
+
+void *thread(void *argp)
+{
+        int *id = (int *)argp;
+        int i;
+
+        for (i = 1; i <= 10; i++)
+        {
+                printf("%d: %d\n", *id, i);
+        }
+
+        return;
+}
+
+void main()
+{
+        pthread_t tid1, tid2, tid3;
+        int i1 = 1;
+        int i2 = 2;
+        int i3 = 3;
+
+        pthread_create(&tid1, NULL, thread, (void *)&i1);
+        pthread_create(&tid2, NULL, thread, (void *)&i2);
+        pthread_create(&tid3, NULL, thread, (void *)&i3);
+
+        pthread_join(tid1, NULL);
+        pthread_join(tid2, NULL);
+        pthread_join(tid3, NULL);
+
+        printf("Application is finished.\n");
+}
+
+1: 1
+1: 2
+1: 3
+1: 4
+1: 5
+1: 6
+1: 7
+1: 8
+1: 9
+1: 10
+3: 1
+3: 2
+3: 3
+3: 4
+3: 5
+3: 6
+3: 7
+3: 8
+3: 9
+3: 10
+2: 1
+2: 2
+2: 3
+2: 4
+2: 5
+2: 6
+2: 7
+2: 8
+2: 9
+2: 10
+
+----------4.
+
+i, c -- stored in static data segment
+j, m -- stored in stack, j on  heap once called with malloc()
+b, g, z -- stored on stack
+
+----------5.
+
+pthread_detach can be called from either the thread itself or another thread, 
+and indicates that you don't want the thread's return value or the ability to wait for it to finish. 
+This is useful because otherwise, until you call pthread_join, the pthread_t value remains valid and consumes resources.
+
+----------6.
+
+There is only 1 possible output since the join happens after the create has already incremented the sharedValue
+Same answer with m concurrent threads
