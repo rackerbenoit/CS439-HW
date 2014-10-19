@@ -1,0 +1,38 @@
+Homework #: 4
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+----------1.
+
+A program with less importance/priority grabs the resources of a program with more priority
+
+This could happen with two or more tasks. A is high priority and B is low priority and both can lock exclusive use of a particular resource.
+If B requests the resource then A requests the resource while B is using the resource, A is blocked from using the resource until B is done.
+This is a problem since the higher priority problem was blocked by the lower priority.
+
+----------2.
+
+
+----------3.
+
+Mutual Exclusion - At least one resource must be held in a non-shareable mode. Only one process can use the resource at any given instant of time
+
+Resource Holding - A process is currently holding at least one resource and requesting additional resources which are being held by other processes
+
+No Preemption - A resource can be released only voluntarily by the process holding it, after that process has completed its task
+
+Circular Wait - A process must be wiating for a resource which is being held by another process, which in turn is waiting for the first process to release the resource.
+
+----------4.
+
+
+----------5.
+
+Condition variables in monitors do not have any history; semaphores do have history
+
+----------6.
+
+
