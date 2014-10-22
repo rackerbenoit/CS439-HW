@@ -1,0 +1,35 @@
+Homework #: 5
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+What causes a memory exception? What is the end result for the running process?
+----------1.
+
+A memory exception occurs when a process will no longer fit in the defined bounds of memory for its program. Essentially, if its instructions will not fit in memory defined for it. The process is shut down if this happens and can be restarted.
+
+What are overlays? How and why were they created?
+----------2.
+
+Overlays were the first methods used when processes became larger than physical memory.
+The program was divided into pieces and the overlay manager swapped pieces(overlays) of the process in and out of memory
+
+Pages have (at least) the following three bits associated with them: the resident bit, the clock/reference bit, and the dirty bit. Describe each bit and its use.
+----------3.
+
+Resident bit shows if the frame associated with an entry is occupied.
+Reference/Clock bit is set anytime a page is accessed. Initially all bits are set to zero and can be cleared at any time.
+If a page was written to after it is paged in, its dirty bit will be set, indicating that the page must be written back to the backing store.
+
+In class, we discussed that paging may increase internal fragmentation. What is internal fragmentation? What steps could you take to reduce it?
+----------4.
+
+It is unused memory in within a unit of allocation. The best way to remove it is to have design change, like dynamically allocating memory based on the demand.
+
+Name two advantages of paging over relocation.
+----------5.
+
+There is far less to no external fragmentation and it is easier to manage the transfer of pages from disk.
+It also allows the physical address space of a process to be noncontiguous.
