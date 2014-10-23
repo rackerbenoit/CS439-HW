@@ -1,0 +1,34 @@
+Homework #: 7
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+--
+Name two advantages of using small pages and two advantages of using large pages in a paging mechanism. Why page sizes are growing in paging memory systems?
+----------1. 
+
+
+----------2.
+
+
+--
+The Operating System gives memory to the heap memory manager k page(s) at a time. Why?
+----------3.
+
+
+--
+Consider a paging system with 16 pages and a page size of 256 bytes. The system has 1024 bytes of physical memory.
+How many bits are in a physical address?
+How many bits represent the page number?
+How many bits are in the complete virtual address?
+What size are the page frames?
+----------4.
+
+
+--
+Question 9.19, page 852, B&O.
+----------5,
+
+

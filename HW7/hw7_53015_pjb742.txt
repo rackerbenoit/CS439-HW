@@ -5,6 +5,64 @@ CS login: paulbeno
 Email address: paul.benoit36@gmail.com
 Unique Number: 53015
 
+--
+Name two advantages of using small pages and two advantages of using large pages in a paging mechanism. Why page sizes are growing in paging memory systems?
 ----------1. 
 
+Advantages of small pages: Allows a process to run anywhere with fewer resources because more pages can be stored in a cache of the same size. Small pages can also retrieve small pieces of information from random locations much quicker.
+Advantages of large pages: Allows a larger process to retrieve fewer large blocks more efficiently than many small ones. It also improves the number of index levels, and allows tables to include more columns
 
+----------2.
+
+a. The page field width is 8 bits. Page size is 2^8 = 256 bytes
+b. 1024 * 2 + 256 * 2(one second-level page table) + 16 * 64 * 2(16 third-level page tables) = 4608 bytes
+
+--
+The Operating System gives memory to the heap memory manager k page(s) at a time. Why?
+----------3.
+
+This prevents fragmentation in the memory. It does not want to assign too many pages to the heap memeory manager at one time.
+This would cause too much external fragmentation.
+
+--
+Consider a paging system with 16 pages and a page size of 256 bytes. The system has 1024 bytes of physical memory.
+----------4.
+
+How many bits are in a physical address?: 10
+How many bits represent the page number?: 4
+How many bits are in the complete virtual address?: 14
+What size are the page frames?: 256 bytes
+
+--
+Question 9.19, page 852, B&O.
+----------5,
+
+1.
+(a) In a buddy system, up to 50% of the space can be wasted due to internal
+	fragmentation.
+(b) The first-fit memory allocation algorithm is slower than the best-fit algo-
+	rithm (on average).
+(c) Deallocation using boundary tags is fast only when the list of free blocks
+	is ordered according to increasing memory addresses.
+(d) The buddy system suffers from internal fragmentation, but not from
+	external fragmentation.
+
+2.
+(a) Using the first-fit algorithm on a free list that is ordered according to
+	decreasing block sizes results in low performance for allocations, but
+	avoids external fragmentation.
+(b) For the best-fit method, the list of free blocks should be ordered according
+	to increasing memory addresses.
+(c) The best-fit method chooses the largest free block into which the re-
+	quested segment fits.
+(d) Using the first-fit algorithm on a free list that is ordered according to
+	increasing block sizes is equivalent to using the best-fit algorithm.
+
+3. Mark & sweep garbage collectors are called conservative if:
+(a) They coalesce freed memory only when a memory request cannot be
+	satisfied.
+(b) They treat everything that looks like a pointer as a pointer.
+(c) They perform garbage collection only when they run out of memory.
+(d) They do not free memory blocks forming a cyclic list.
+
+Answer: c, b, a
