@@ -1,0 +1,110 @@
+Homework #: 1
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+----------1. 
+
+#include <stdio.h>
+#include <ctype.h>
+
+int main()
+{
+
+    int c;
+ 
+    printf("How many times would you like a phrase printed out?: ");
+    c = getchar() - '0';
+    count_to_x ( c );
+    
+    return 0;
+}
+
+int count_to_x (int x)
+{
+    if(x > 0)
+    {
+        printf("Hello World!\n");
+        count_to_x( x - 1 );
+    }
+}
+
+------------------OR
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+
+    int c = atoi(argv[1]);
+ 
+    count_to_x ( c );
+
+    if(c == c)
+        printf("Goodbye\n");
+    
+    return 0;
+}
+
+int count_to_x (int x)
+{
+    if(x > 0)
+    {
+        printf("Hello World!\n");
+        count_to_x( x - 1 );
+    }
+}
+
+----------2.
+
+gcc -g -O0 -o hello hello.c
+
+----------3.
+
+gdb hello
+break 16
+run
+next
+bt
+
+(gdb) bt
+#0  count_to_x (x=0) at hello.c:18
+#1  0x00000000004005e2 in count_to_x (x=1) at hello.c:21
+#2  0x00000000004005e2 in count_to_x (x=2) at hello.c:21
+#3  0x00000000004005e2 in count_to_x (x=3) at hello.c:21
+#4  0x00000000004005e2 in count_to_x (x=4) at hello.c:21
+#5  0x00000000004005e2 in count_to_x (x=5) at hello.c:21
+#6  0x00000000004005b3 in main () at hello.c:11
+
+Line 11
+
+----------4.
+
+The value of x is optimzed out.
+At level 4 optimzation, the program realizes that the value does not need to be stored in memeory for
+each iteration.
+
+----------5.
+
+paulbeno@hot-tamales:~/CS439/HW/1$ grep -wc "12" nums.txt
+101
+paulbeno@hot-tamales:~/CS439/HW/1$ grep -wc "10" nums.txt
+114
+paulbeno@hot-tamales:~/CS439/HW/1$ grep -wc "87" nums.txt
+96
+
+----------6.
+
+Pairs must sit, design, and program together at least 80% of the time, and split keyboard 
+time evenly.
+
+Each student can work independently for at most 10% of the effort/time.
+
+Once you begin an assignment with a partner (or a group), you cannot change partners or groups for that assignment
+
+
+
+
