@@ -12,7 +12,7 @@ This won't quite work. In no more than two sentences, what did your co-worker fo
 ----------1.
 
 
-The user does not know the virtual address, only the logical address.
+One cannot guarentee that contiguous vritual memory will translate to contiguous physical memory.
 
 
 --
@@ -43,6 +43,7 @@ Assume a spinning disk. Where on that disk would you place the inode array? Just
 
 
 On a spinning disk, keeping related blocks near each other reduces the amount of movement that the head actuator and disk must perform to access a data block, thus speeding up disk IO. 
+Also, keep the data on the outer edge of the disk as the outer edge spins faster
 
 
 --
@@ -55,11 +56,11 @@ e. Extents
 ----------5.
 
 
-Linked - Files can grow just fine
-Direct - Can grow easily
-Contiguous - Initially can have any size but cannot grow afterwards. Once a set amount of space is allocated, that is it.
-Multi-level Index - Supports growing....does limit the size to some extent if the system runs out of indexes at the 3rd level (512gb)
-Extents - Grows well
+Linked - Files can grow just fine; No
+Direct - Can grow easily; No, but it depends
+Contiguous - No; Initially can have any size but cannot grow afterwards. Once a set amount of space is allocated, that is it.
+Multi-level Index - Yes; Supports growing....does limit the size to some extent if the system runs out of indexes at the 3rd level (512gb)
+Extents - Grows well; No
 
 
 
@@ -69,7 +70,7 @@ Pooh Software Ltd. is selling a file system that uses a UNIX-like file system wi
 
 
 Updates to inodes will have to be done to both copies. This will decrease the performance of operations that attempt to modify the inodes, such as allocating a new file, deleting a file, extending the size of a file, or opening a file for updates (among perhaps many others). However, reading information from an inode can be made faster with clever disk scheduling. To read a particular inode, we schedule a read from either track that is closest to the current head position.
-
+Can potentially have a faster seek time by 50% if you know where both inodes are. But write times double and more storage is used
 
 
 

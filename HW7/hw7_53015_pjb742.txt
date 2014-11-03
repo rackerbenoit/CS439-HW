@@ -11,11 +11,13 @@ Name two advantages of using small pages and two advantages of using large pages
 
 Advantages of small pages: Allows a process to run anywhere with fewer resources because more pages can be stored in a cache of the same size. Small pages can also retrieve small pieces of information from random locations much quicker.
 Advantages of large pages: Allows a larger process to retrieve fewer large blocks more efficiently than many small ones. It also improves the number of index levels, and allows tables to include more columns
+Bigger page: More locality, fewer page faults, PTs are smaller
+Small page: More small processes
 
 ----------2.
 
 a. The page field width is 8 bits. Page size is 2^8 = 256 bytes
-b. 1024 * 2 + 256 * 2(one second-level page table) + 16 * 64 * 2(16 third-level page tables) = 4608 bytes
+b. 1024 * 4  * 1(one first-level page table) 256 * 4 * 1 (1 second level page table)+ 64 * 4 * 16(16 third-level page tables) = 9216 bytes
 
 --
 The Operating System gives memory to the heap memory manager k page(s) at a time. Why?
@@ -23,6 +25,7 @@ The Operating System gives memory to the heap memory manager k page(s) at a time
 
 This prevents fragmentation in the memory. It does not want to assign too many pages to the heap memeory manager at one time.
 This would cause too much external fragmentation.
+Process asks for memory, allocates pages that will allow for that memory
 
 --
 Consider a paging system with 16 pages and a page size of 256 bytes. The system has 1024 bytes of physical memory.
@@ -30,7 +33,7 @@ Consider a paging system with 16 pages and a page size of 256 bytes. The system 
 
 How many bits are in a physical address?: 10
 How many bits represent the page number?: 4
-How many bits are in the complete virtual address?: 14
+How many bits are in the complete virtual address?: 8(PPO) + 4 = 12 bits
 What size are the page frames?: 256 bytes
 
 --
@@ -65,4 +68,4 @@ Question 9.19, page 852, B&O.
 (c) They perform garbage collection only when they run out of memory.
 (d) They do not free memory blocks forming a cyclic list.
 
-Answer: c, b, a
+Answer: a, d, b
