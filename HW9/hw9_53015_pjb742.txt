@@ -1,0 +1,59 @@
+Homework #: 9
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+----
+In Unix, the pipe(fd[0]) function call creates an I/O mechanism called a pipe and returns two file descriptors, fd[0] and fd[1]. The files associated with fd[0] and fd[1] are streams of data and are both opened for reading and writing. Suppose pipe always returns the two lowest-numbered file descriptors in the process's file descriptor table that are unused. Assume that initially fdt[], the file descriptor table, has three open entries: fdt[0] is the default input device, fdt[1] is the default output device and fdt[2] is the default error output device; all other entries of the fdt are NULL. What does the fdt look like after each of the five following commands is executed in sequence by the process?
+
+1: pipe (&fd[0]);
+2: close(fd[0]);
+3: close(1);
+4: dup(fd[1]);
+5: close(fd[1]);
+When might such a sequence of commands be useful?
+
+You'll need to use the man pages for pipe, close, and dup to answer this question.
+-------------------1.
+
+
+Answer
+
+
+----
+Which file allocation scheme that we studied is most similar to paging? segmentation?
+-------------------2.
+
+
+Answer
+
+
+----
+Jane would like to append data to the file /usr/jane/classes/cs439/exam_study_notes.txt. Assuming she has the correct permissions, describe the steps the operating system would need to take to append the data.
+-------------------3.
+
+
+Answer
+
+
+----
+Using the traceroute command, trace the hops a packet takes from one of the UTCS machines to a website in Europe. Inspect the trace. What do you notice? Do you see any machines you recognize? ISPs? Cities? Please be sure to tell us what website you used.
+Perform the trace again. How does the second time affect the output?
+-------------------4.
+
+
+Answer
+
+
+----
+System Calls vs. Procedure Calls: How much more expensive is a system call than a procedure call? Write a simple test program to compare the cost of a simple procedure call to a simple system call ("getuid()" is a good candidate on UNIX; see the man page.) (Note: be careful to prevent the optimizing compiler from "optimizing out" your procedure calls. Do not compile with optimization on. Also, do not use a system call within your procedure call!)
+Explain the difference (if any) between the time required by your simple procedure call and simple system call by discussing what work each call must do (be specific). [Note: Do not provide the source code for your program, just the results].
+Hint: You should use system calls such as gethrtime() or gettimeofday() for time measurements. Design your code such that the measurement overhead is negligible. Also, be aware that timer values in some systems have limited resolution (e.g., millisecond resolution).
+-------------------5.
+
+
+Answer
+
+
