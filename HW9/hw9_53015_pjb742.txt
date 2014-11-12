@@ -27,7 +27,7 @@ Which file allocation scheme that we studied is most similar to paging? segmenta
 -------------------2.
 
 
-Answer
+Multi-level index allocation?
 
 
 ----
@@ -35,7 +35,29 @@ Jane would like to append data to the file /usr/jane/classes/cs439/exam_study_no
 -------------------3.
 
 
-Answer
+cs439/ is a directory that contains the inumber for exam_study_notes.txt
+  - Locate cs439/, read directory
+classes/ is a directory that contains the inumber for cs439
+  - Locate classes/, read directory
+jane/ is a directory that contains the inumber for classes
+  - Locate jane/, read directory
+usr/ is a directory that contains the inumber for jane
+  - Locate usr/, read directory
+
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+Read the inode for / from a fixed location
+Read the first data block for root
+Read the inode for usr/
+Read the first data block for usr/
+Read the inode for jane/
+Read the first data block for jane/
+Read the inode for classes/
+Read the first data block for classes/
+Read the inode for cs439/
+Read the first data block for cs439/
+Read the inode for exam_study_notes.txt
+Read the first data block for exam_study_notes.txt
 
 
 ----
@@ -44,7 +66,16 @@ Perform the trace again. How does the second time affect the output?
 -------------------4.
 
 
-Answer
+The trace starts in Austin on the UT servers abd moves out to further servers.
+I also noticed that the traceroute sets 30 hops as max and only uses about 13 hops to complete the trace.
+cs-gw.cs.utexas.edu (128.83.139.1) -> I recognize this
+Cites:
+Austin
+Houston (IAH)
+
+traceroute europa.eu/
+
+The routing seem to be faster when the tracer is run twice
 
 
 ----
