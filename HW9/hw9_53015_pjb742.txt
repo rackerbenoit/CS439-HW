@@ -19,7 +19,16 @@ You'll need to use the man pages for pipe, close, and dup to answer this questio
 -------------------1.
 
 
-Answer
+pipe()  creates a pipe, a unidirectional data channel that can be used for interprocess communication.  The array pipefd is used to return two file descriptors referring to the ends of the pipe.  pipefd[0] refers to the read  end  of  the  pipe.   pipefd[1] refers  to the write end of the pipe.  Data written to the write end of the pipe is buffered by the kernel until it is read from the read end of the pipe.
+-- fdt has ported all the files to the pipe buffer
+
+ close()  closes  a  file descriptor, so that it no longer refers to any file and may be reused.  Any record locks (see fcntl(2)) held on the file it was associated with, and owned by the process, are removed (regardless of the file descriptor that was  used to obtain the lock).
+-- Closes fd[0] so that no other files can refer to it or close it.
+
+These system calls create a copy of the file descriptor oldfd.
+-- Duplicates fd[1]
+
+Closes the the fd[1] file descriptor
 
 
 ----
@@ -27,7 +36,7 @@ Which file allocation scheme that we studied is most similar to paging? segmenta
 -------------------2.
 
 
-Multi-level index allocation?
+Multi-level index allocation and NTFS records with extents
 
 
 ----
@@ -85,6 +94,12 @@ Hint: You should use system calls such as gethrtime() or gettimeofday() for time
 -------------------5.
 
 
-Answer
+A system call is expected to be significantly more expensive than a procedure call. A system call involves the following actions, which do not occur during a simple procedure call, and thus entails a high overhead:
+
+- A context switch
+- A trap to a specific location in the interrupt vector
+- Control passes to a service routine, which runs in 'monitor' mode
+- The monitor determines what system call has occurred
+- Monitor verifies that the parameters passed are correct and legal
 
 
