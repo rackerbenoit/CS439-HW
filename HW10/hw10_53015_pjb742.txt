@@ -1,0 +1,48 @@
+Homework #: 10
+Student Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email address: paul.benoit36@gmail.com
+Unique Number: 53015
+
+
+--
+Which is the best (fastest) network on which to implement a remote-memory read that sends a 100 byte packet from machine A to machine B and then sends a 8000 byte packet from machine B to machine A?
+A network with 200 microsecond processing overhead, 10 Mbyte/s bandwidth, 20 microsecond latency
+A network with 20 microsecond processing overhead, 10 Mbyte/s bandwidth, 200 microsecond latency
+A network with 20 microsecond processing overhead, 1 Mbyte/s bandwidth, 2 microsecond latency
+A network with 2 microsecond processing overhead, 1 Mbyte/s bandwidth, 20 microsecond latency
+----------1.
+
+
+
+
+--
+In class, we covered the idea of remote procedure calls. We discussed difficulties encountered when one attempts to implement a remote procedure call. Name the four of the difficulties. There are additional complications when the procedure executes a system call. What are the complications and how might you fix them?
+----------2.
+
+
+
+
+
+--
+Describe the steps necessary to prepare a server to accept connections. How does it accept a connection?
+----------3.
+
+
+
+
+
+--
+In class, we have discussed many methods to get reliability from unreliable parts. Name and describe 2.
+----------4.
+
+
+
+
+
+--
+In two-phase commit, suppose the master fails after writing ``GLOBAL_COMMIT'' to disk and sending ``GLOBAL_COMMIT'' to all participating nodes but before any of the nodes receive this message. Suppose that the ``GLOBAL_COMMIT'' message reaches i of the n participants and that the participants implement a protocol in which they communicate with one another when they suspect the primary has died. What is the minimum number of participants that must receive the ``GLOBAL_COMMIT'' message to allow the participants to complete the transaction without waiting for the master to recover?
+----------5.
+
+
