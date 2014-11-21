@@ -15,6 +15,10 @@ A network with 2 microsecond processing overhead, 1 Mbyte/s bandwidth, 20 micros
 ----------1.
 
 
+a) {(2 * 200) + 10 + 20} + {(2 * 200) + 800 + 20} = 1650 microseconds
+b) 1290 microseconds
+c) 8182 microseconds
+d) 8148 microseconds
 
 
 --
@@ -22,7 +26,7 @@ In class, we covered the idea of remote procedure calls. We discussed difficulti
 ----------2.
 
 
-
+You cannot pass pointers, it is a weakly typed language, it is not always possible to determine parameter types or sizes, and you may not use global variables.
 
 
 --
@@ -30,7 +34,18 @@ Describe the steps necessary to prepare a server to accept connections. How does
 ----------3.
 
 
+Create a socket
+Identify the socket
+On the server, wait for an incoming connection
+On the client, connect to the server's socket
+Send and receive messages
+Close the socket
 
+OR more simply
+
+Setup a socket
+Bind to a port
+Listen
 
 
 --
@@ -38,11 +53,23 @@ In class, we have discussed many methods to get reliability from unreliable part
 ----------4.
 
 
-
+TCP/IP -> Keep asking
+Rollback logs with transactions
+RAID
 
 
 --
 In two-phase commit, suppose the master fails after writing ``GLOBAL_COMMIT'' to disk and sending ``GLOBAL_COMMIT'' to all participating nodes but before any of the nodes receive this message. Suppose that the ``GLOBAL_COMMIT'' message reaches i of the n participants and that the participants implement a protocol in which they communicate with one another when they suspect the primary has died. What is the minimum number of participants that must receive the ``GLOBAL_COMMIT'' message to allow the participants to complete the transaction without waiting for the master to recover?
 ----------5.
 
+1
+
+
+--
+In Class Question: How does a context switch happen?
+
+All registers are saved, then memory, metadata -> All saved to a PCB on disk
+TLB is flushed
+Choose new scheduling algorithm to choose new process
+Load metadata that was stored
 
