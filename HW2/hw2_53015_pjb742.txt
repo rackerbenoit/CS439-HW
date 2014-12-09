@@ -6,10 +6,12 @@ Email address: paul.benoit36@gmail.com
 Unique Number: 53015
 
 ----------1.
-Processes that can only be run in kernel mode, NOT user mode
+Instruction that can only be run in kernel mode, NOT user mode
 - Halt the processor
 - Change the mode bit
 - Initiate an I/O operation
+- Disable/Enable Interuupts
+- Manipulating OS memory
 
 ----------2.
 If each process is running independently and not in need of another process in the background, allocate all the processor.
@@ -21,4 +23,20 @@ Physical memory should allocate the most memory to large/important processes whi
 
 ----------3.
 
+Each process executed in user mode needs to be checked  for memory access. If it is kernel, process does not need to be checked.
+Page tables and other data structures help processes stay within their rights of access
+
+---------4.
+
+OS uses this when it wants to give control to a user process and this happens at the end of a context switch. This can also happen at the end of an interrupt service routine.
+
+----------5.
+
+31
+
+----------6.
+
+Program: Human readable code
+Executable: Compiled program
+Process: Running executable
 

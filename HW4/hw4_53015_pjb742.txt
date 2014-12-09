@@ -43,33 +43,27 @@ Another difference when using semaphores is that every routine accessing a share
 
 1.
 semaphore bike = 1;
-semaphore rest = 1;
 
 void borrow_bike()
 {
-	bike -> down();
-	//This means resting is locked and that
-	//the rider may not rest at the time
-	//They rest until they get on the bike
-	rest -> down();
-
+	sema_down(bike);
 	<ride bike>
-
-	bike -> up();
-	rest -> up();
+	sema_up(bike);
 }
 
 2.
+Lock lock;
 Condvar bike;
-int bike = 1;
-Condvar rest;
-int rest = 1;
+int count = 1;
 
 void borrow_bike()
 {
 	lock -> acquire();
-	while(bike == 0 && rest == 0)
-		<ride bike>
-	bike, rest = 1;
-	lock -> release();
+	while(count <= 0)
+		bike->wait();
+	count--;
+	<ride bike>
+	count++;
+	bike->Signal();
+	lock->release();
 }
