@@ -66,12 +66,7 @@ Ranking (scale below): Excellent
 
 >> Superficial: Practically no participation.
 
->> No Show: No participation at all.
-
-
-
-
----- PRELIMINARIES ----
+ELIMINARIES ----
 
 >> If you have any preliminary comments on your submission, notes for the
 >> TAs, or extra credit, please give them here.
@@ -79,6 +74,8 @@ Ranking (scale below): Excellent
 >> Please cite any offline or online sources you consulted while
 >> preparing your submission, other than the Pintos documentation, course
 >> text, lecture notes, and course staff.
+
+http://en.wikipedia.org/wiki/Path_%28computing%29
 
 		     INDEXED AND EXTENSIBLE FILES
 		     ============================
@@ -96,16 +93,13 @@ struct inode_disk
 	block_sector_t ib_level2; /* Offset inside the 2nd level indirect block */
 	int num_ib; /* Number of indirect blocks need for a file */
 	int size_in_bytes; /* Amount of a data block used */
+	int creation_length; /* Holds the length of the file upon creation so that we have a variable that is not modified during growth etc */
+/* Others were also deleted */
 }
 
 NEW:
 struct inode
 {
-	struct list_elem elem; /* The element in the inode list */
-	block_sector_t sector; /* Sector number on this disk */
-	int open_cnt; /* Number of processes that have opened a file */
-	bool removed; /* Deleted or not? True if deleted */
-	int deny_write_cnt; /* If greater than 0, deny a write */
 	struct inode_disk data /* Inode_disk access through this struct */
 }
 
@@ -146,7 +140,12 @@ is why one must wait if the file is locked.
 >> code avoids this race.
 
 
-
+Using monitors for this reader/writer problem is the ideal solution.
+A lock, counters, and Condition Variables are used for this implementation.
+On every file (F) extension, a lock is acquired for process A and while the number of writers 
+(process B) is greater than 0,
+read (A) is told to wait until the write (B) signals that it is finished. If there are multiple
+reads waiting on a write, broadcasting will signal all read threads that they may now read.
 
 
 >> A5: Explain how your synchronization design provides "fairness".
@@ -157,7 +156,12 @@ is why one must wait if the file is locked.
 >> from reading the file.
 
 
-
+Implementation includes counters and Condition Variables for readers and writers. This will keep 
+track of how many readers and
+writers there are, including active writers. If a process is currently writing, the reading and other 
+writers will be blocked. When a writer is done with a file, it broadcasts to all other processes that it is done
+writing. Although any process could start writing, this does give every process a fair chance to write.
+This process will happen every time a process gives up a write.
 
 
 ---- RATIONALE ----
@@ -197,7 +201,13 @@ time and cycles than if we used a multilevel index.
 NEW:
 struct dir_entry
 {
-	struct dir *subdir; /* Allows us to access struct dir which has useful data about directories */
+	struct dir *subdir; /* Allows us to access struct dir which has useful data about directories and gives us the actual directory struct address */
+}
+
+NEW:
+struct thread:
+{
+	struct dir *working_thread /* Tracks the current working directory for each thread */
 }
 
 
@@ -207,7 +217,14 @@ struct dir_entry
 >> do traversals of absolute and relative paths differ?
 
 
-First, we decide if the path is referring to the current or root directory (absolute or relative path)
+First, we decide if the path is referring to the current or root directory (absolute or relative path).
+Then we decide if we should be moving up or down in a directory depending on what was used in the initial path 
+(.., / “name”, for example). If the user path is “..”, we move to the parent directory.
+If the user path is “/“, we start from the root directory. If the user path start with a string of characters,
+we search the current working directory (Stored in thread struct) for that directory and use a “/“ as a directory separator/delimiter. 
+An  absolute or full path is a  path that points to the same location on one file system regardless of the present directory.
+A relative path is a path relative to the working directory of the user.
+It is important to distinguish the two in our code so that the user gets the directories and output that they might expect.
 
 
 ---- SYNCHRONIZATION ----
@@ -217,15 +234,35 @@ First, we decide if the path is referring to the current or root directory (abso
 >> should succeed, as should only one of two simultaneous attempts to
 >> create a file with the same name, and so on.
 
+
+We created a semaphore for directory entries. Amongst other procedures, when an attempt is made to 
+delete a file, sema_down is called to prevent another process from obtaining that file and modifying/deleting
+that file while another process is doing the same. Once the file is completely done being modified/deleted, sema_up is called to alert the waiting process of the free file. Although, if a file is deleted, the waiting process may no longer be able to obtain the file it was initially searching for. The same goes for creation. When a file is 
+being created in a directory, a lock is used to prevent another process from creating a file at the same time, 
+regardless of the name initially.
+A directory is also a file so all this
+refers to directories as well for the race conditions.
+
+
 >> B5: Does your implementation allow a directory to be removed if it
 >> is open by a process or if it is in use as a process's current
 >> working directory?  If so, what happens to that process's future
 >> file system operations?  If not, how do you prevent it?
 
+
+No, a flag is set for the directory and any process that is trying to read that directory will be denied access.
+If a process is currently reading or writing inside the directory that is being deleted,
+the directory will be deleted after the process is done with the directory, not during the read/write.
+
+
 ---- RATIONALE ----
 
 >> B6: Explain why you chose to represent the current directory of a
 >> process the way you did.
+
+
+We represented the current directory in the thread struct. This seemed like the best idea since it is local
+and on a per threats basis.
 
 
 			   SURVEY QUESTIONS
@@ -251,3 +288,9 @@ the quarter.
 >> students in future quarters?
 
 >> Any other comments?
+
+>> No Show: No participation at all.
+
+
+
+
