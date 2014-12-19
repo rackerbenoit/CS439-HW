@@ -1,0 +1,148 @@
+################
+Paul Benoit
+################
+Name1: Paul Benoit
+EID1: pjb742
+CS login: paulbeno
+Email: paul.benoit36@gmail.com
+Unique Number: 53015
+
+Slip days used: 0
+
+****EACH student submits a (unique) design document.****
+
+################
+Zoe Lamb
+################
+Name1: Zoe Lamb
+EID1: zl2866
+CS login: zoe
+Email: zlamb@utexas.edu
+Unique Number: 53005
+
+Your partner's ranking (scale below): Excellent
+
+################
+PARTNER EVALUATION SCALE
+################
+Excellent: Consistently went above and beyond - tutored others, carried
+more than his/her fair share of the load.
+
+Very Good: Consistently did what he/she was supposed to do, very well
+prepared and cooperative.
+
+Satisfactory: Usually did what he/she was supposed to do, minimally
+prepared and cooperative.
+
+Marginal: Sometimes failed to show up and/or rarely prepared.
+
+Deficient: Often failed to show up and/or rarely prepared.
+
+Unsatisfactory: Consistently failed to show up and/or unprepared.
+
+Superficial: Practically no participation.
+
+No Show: No participation at all.
+
+################
+Preliminaries
+################
+(1) If you have any preliminary comments on your submission, notes for
+  the TAs, or extra credit, please give them here.
+
+(2) Please cite any offline or online sources you consulted while
+  preparing your submission, other than the Linux documentation,
+  course text, and lecture notes.
+
+Computer Systems A Programmer's Perspective by Bryant and O'Hallaron
+Particular page numbers and code blocks are cited in the program
+
+################
+Questions regarding Part 0
+################
+(1) How many child processes are created when doFib() begins with
+  an input of 5?  Show the return value for each child process, numbering
+  the processes beginning with 0 (the original process) and incrementing for
+  each child process.
+
+14 child processes. 
+Process 0 returns 5 
+Process 1a returns 3
+Process 1b returns 2
+Process 2a returns 1 
+Process 2b returns 1 
+Process 2c returns 1
+Process 2d returns 2
+PRocess 3a returns 0;
+Process 3b returns 1;
+Process 3c returns 0;
+Process 3d returns 1;
+Process 3e returns 1;
+Process 3f returns 1;
+Process 4a returns 0;
+Process 4b returns 1;
+
+(2) In part 0.3, which flavor of exec did you choose to use?  Why?
+
+We used execv since we did not need to utilize the environment variable.
+
+################
+Questions regarding Part 1
+################
+(1) In the provided utility function Signal(), what does the call to
+  sigaction() do?  Why was sigaction() used instead of signal()?
+	
+	This was provided to us in the util.c. Sigaction allows users to clearly specify the signal handling
+	semantics they want, and the user has to set the entries of a 
+	structure. This is why sigaction() was used.
+
+(2) What is the last assembly language instruction executed by the
+  signal handler function that you write?  (You may choose either signal
+  handler.)
+	
+	The last instruction was retq.
+
+(3) After the instruction identified in the previous question executes, 
+  what is the next assembly language instruction executed?
+
+	The next instruction was in main(): mov %eax, -0x4(%rbp)
+
+(4) When the signal handler finishes running, it must restore all of
+  the registers from the interrupted thread to exactly their values
+  before the signal occurred. How is this done?
+
+	The register values that are going to be restored are stored in the PCB,
+	so before the handler returns to main it has to restore the values
+	from the PCB, only after that does it return to user mode.
+
+
+################
+Questions regarding Part 2
+################
+(1) In msh.c, we use three separate signal handlers to catch our signals. 
+  You can also use a single signal handler to catch all three signals.  Is
+  there a design advantage of one over the other?  Explain your answer.
+
+	If there is only one handler, then any signal sent to a handler will block all other signals. If you have separate handlers for each signal type, then pending signals of different types are not blocked.
+Design Document (15/20):
+========================
+Part 0 (6/6):
+-------------
+
+
+Part 1 (9/11):
+---------------
+1- The behavior of signal() varies across Unix versions, but sigaction() is portable.(-1)
+
+4- sig_return() restores values from stack.(-1)
+
+
+Part 2 (0/3):
+-------------
+1- There is no difference in term of correctness. Both are using queues. (-3)
+
+
+
+Design Code (10/10):
+====================
+

@@ -1,0 +1,253 @@
+                    +-------------------------+
+                    |           CS 439        |
+                    | PROJECT 4: FILE SYSTEMS |
+                    |      DESIGN DOCUMENT    |
+                    +-------------------------+
+
+****EACH student submits a (unique) design document.****
+
+---- Name ----
+
+>> Fill your name, UT EID, CS login, email address, and unique number:
+
+Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email: paul.benoit36@gmail.com
+Unique Number: 53015
+
+
+Slip days used on this project: 0
+
+---- GROUP ----
+
+>> Fill the names, UT EIDs, CS logins, email addresses, and unique numbers
+>> of your group members.  Also fill in each person's ranking on the 
+>> partner evaluation scale, as determined by you.
+
+Name1: Hans Urquia
+EID1: hau72
+CS login: haurquia
+Email: hansurquia@gmail.com
+Unique Number: 53025
+Ranking (scale below): Very Good
+
+Name2: Jordan Torres
+EID2: jxt59
+CS login: jxtbronc
+Email: jxtbronco@yahoo.com
+Unique Number: 53033
+Ranking (scale below): Excellent
+
+Name3: Zoe Lamb
+EID3: zl2866
+CS login: zoe
+Email: zlamb@utexas.edu
+Unique Number: 53005
+Ranking (scale below): Excellent
+
+
+---- PARTNER EVALUATION SCALE ----
+
+>> Excellent: Consistently went above and beyond - tutored others, carried
+>> more than his/her fair share of the load.
+
+>> Very Good: Consistently did what he/she was supposed to do, very well
+>> prepared and cooperative.
+
+>> Satisfactory: Usually did what he/she was supposed to do, minimally
+>> prepared and cooperative.
+
+>> Marginal: Sometimes failed to show up and/or rarely prepared.
+
+>> Deficient: Often failed to show up and/or rarely prepared.
+
+>> Unsatisfactory: Consistently failed to show up and/or unprepared.
+
+>> Superficial: Practically no participation.
+
+>> No Show: No participation at all.
+
+
+
+
+---- PRELIMINARIES ----
+
+>> If you have any preliminary comments on your submission, notes for the
+>> TAs, or extra credit, please give them here.
+
+>> Please cite any offline or online sources you consulted while
+>> preparing your submission, other than the Pintos documentation, course
+>> text, lecture notes, and course staff.
+
+		     INDEXED AND EXTENSIBLE FILES
+		     ============================
+
+---- DATA STRUCTURES ----
+
+>> A1: Copy here the declaration of each new or changed `struct' or
+>> `struct' member, global or static variable, `typedef', or
+>> enumeration.  Identify the purpose of each in 25 words or less.
+
+NEW in this struct:
+struct inode_disk
+{
+	off_t num_sectors; /* Number of data sectors needed for a file */
+	block_sector_t ib_level2; /* Offset inside the 2nd level indirect block */
+	int num_ib; /* Number of indirect blocks need for a file */
+	int size_in_bytes; /* Amount of a data block used */
+}
+
+NEW:
+struct inode
+{
+	struct list_elem elem; /* The element in the inode list */
+	block_sector_t sector; /* Sector number on this disk */
+	int open_cnt; /* Number of processes that have opened a file */
+	bool removed; /* Deleted or not? True if deleted */
+	int deny_write_cnt; /* If greater than 0, deny a write */
+	struct inode_disk data /* Inode_disk access through this struct */
+}
+
+
+>> A2: What is the maximum size of a file supported by your inode
+>> structure?  Show your work.
+
+
+We only use a second level of indirection:
+So,
+An inode points at a double indirect block and that points to 128 indirect blocks. Each of those
+indirect blocks point at 128 data block of 512 bytes each.
+128 (Number of indirect blocks) * 128 (Number of data blocks) * 512 (Number of bytes in a data block)
+
+= 8388608 Bytes = 8 Megabytes. 
+
+Maximum size = 8 MB
+
+
+---- SYNCHRONIZATION ----
+
+>> A3: Explain how your code avoids a race if two processes attempt to
+>> extend a file at the same time.
+
+
+A semaphore is created to help lock a file while it being extended
+If a file is being extended, we call sema_down to lock the process on the 
+particular file. When the file is no longer being extended, we call sema_up.
+If two processes attempted to extend one file at the same time, a deadlock would occur. That 
+is why one must wait if the file is locked.
+
+
+>> A4: Suppose processes A and B both have file F open, both
+>> positioned at end-of-file.  If A reads and B writes F at the same
+>> time, A may read all, part, or none of what B writes.  However, A
+>> may not read data other than what B writes, e.g. if B writes
+>> nonzero data, A is not allowed to see all zeros.  Explain how your
+>> code avoids this race.
+
+
+
+
+
+>> A5: Explain how your synchronization design provides "fairness".
+>> File access is "fair" if readers cannot indefinitely block writers
+>> or vice versa.  That is, many processes reading from a file cannot
+>> prevent forever another process from writing the file, and many
+>> processes writing to a file cannot prevent another process forever
+>> from reading the file.
+
+
+
+
+
+---- RATIONALE ----
+
+>> A6: Is your inode structure a multilevel index?  If so, why did you
+>> choose this particular combination of direct, indirect, and doubly
+>> indirect blocks?  If not, why did you choose an alternative inode
+>> structure, and what advantages and disadvantages does your
+>> structure have, compared to a multilevel index?
+
+
+No, Our method only uses a doubly indirect block. In some sense this is easier to implement than
+a combination of all 3 multi-level index techniques but it is much slower.
+A multilevel index would possibly point directly to a data block if the file was
+under 512 bytes and to a single indirect block if it was a little larger and the
+doubly indirect would be the alternative used last.
+
+The main advantage of our implementation: We always use the same method to store a file to disk no matter
+how large the file happens to be. This is theoretically less code and makes some parts of debugging easier
+as we don't have to check the accuracy of many different levels
+
+The main disadvantage of our implementation: Storing a small file versus a large file may not be significantly 
+faster since all files must be stored using 2 levels of indirection. Our method is less efficient in terms of 
+time and cycles than if we used a multilevel index.
+
+
+			    SUBDIRECTORIES
+			    ==============
+
+---- DATA STRUCTURES ----
+
+>> B1: Copy here the declaration of each new or changed `struct' or
+>> `struct' member, global or static variable, `typedef', or
+>> enumeration.  Identify the purpose of each in 25 words or less.
+
+
+NEW:
+struct dir_entry
+{
+	struct dir *subdir; /* Allows us to access struct dir which has useful data about directories */
+}
+
+
+---- ALGORITHMS ----
+
+>> B2: Describe your code for traversing a user-specified path.  How
+>> do traversals of absolute and relative paths differ?
+
+
+First, we decide if the path is referring to the current or root directory (absolute or relative path)
+
+
+---- SYNCHRONIZATION ----
+
+>> B4: How do you prevent races on directory entries?  For example,
+>> only one of two simultaneous attempts to remove a single file
+>> should succeed, as should only one of two simultaneous attempts to
+>> create a file with the same name, and so on.
+
+>> B5: Does your implementation allow a directory to be removed if it
+>> is open by a process or if it is in use as a process's current
+>> working directory?  If so, what happens to that process's future
+>> file system operations?  If not, how do you prevent it?
+
+---- RATIONALE ----
+
+>> B6: Explain why you chose to represent the current directory of a
+>> process the way you did.
+
+
+			   SURVEY QUESTIONS
+			   ================
+
+Answering these questions is optional, but it will help us improve the
+course in future quarters.  Feel free to tell us anything you
+want--these questions are just to spur your thoughts.  You may also
+choose to respond anonymously in the course evaluations at the end of
+the quarter.
+
+>> In your opinion, was this assignment, or any one of the three problems
+>> in it, too easy or too hard?  Did it take too long or too little time?
+
+>> Did you find that working on a particular part of the assignment gave
+>> you greater insight into some aspect of OS design?
+
+>> Is there some particular fact or hint we should give students in
+>> future quarters to help them solve the problems?  Conversely, did you
+>> find any of our guidance to be misleading?
+
+>> Do you have any suggestions for the TAs to more effectively assist
+>> students in future quarters?
+
+>> Any other comments?

@@ -1,0 +1,343 @@
+                     +--------------------------+
+                     |           CS 439         |
+                     | PROJECT 2: USER PROGRAMS |
+                     |      DESIGN DOCUMENT     |
+                     +--------------------------+
+
+****EACH student submits a (unique) design document.****
+
+---- Name ----
+
+>> Fill your name, UT EID, CS login, email address, and unique number:
+
+Name: Paul Benoit
+EID: pjb742
+CS login: paulbeno
+Email: paul.benoit36@gmail.com
+Unique Number: 53015
+
+
+Slip days used on this project: 0
+
+---- GROUP ----
+
+>> Fill the names, UT EIDs, CS logins, email addresses, and unique numbers
+>> of your group members.  Also fill in each person's ranking on the 
+>> partner evaluation scale, as determined by you.
+
+Name1:Jordan Torres
+EID1: jxt59
+CS login: jxtbronc
+Email: jxtbronco@yahoo.com
+Unique Number: 53033
+Ranking (scale below): Excellent
+
+Name2: Zoe Lamb
+EID2: zl2866
+CS login: zoe
+Email: zlamb@utexas.edu
+Unique Number: 53005
+Ranking (scale below): Very Good
+
+Name3: Hans Urquia
+EID3: hau72
+CS login: haurquia
+Email: hansurquia@gmail.com
+Unique Number: 53025
+Ranking (scale below): Satisfactory
+
+
+---- PARTNER EVALUATION SCALE ----
+
+>> Excellent: Consistently went above and beyond - tutored others, carried
+>> more than his/her fair share of the load.
+
+>> Very Good: Consistently did what he/she was supposed to do, very well
+>> prepared and cooperative.
+
+>> Satisfactory: Usually did what he/she was supposed to do, minimally
+>> prepared and cooperative.
+
+>> Marginal: Sometimes failed to show up and/or rarely prepared.
+
+>> Deficient: Often failed to show up and/or rarely prepared.
+
+>> Unsatisfactory: Consistently failed to show up and/or unprepared.
+
+>> Superficial: Practically no participation.
+
+>> No Show: No participation at all.
+
+
+---- PRELIMINARIES ----
+
+>> If you have any preliminary comments on your submission, notes for the
+>> TAs, or extra credit, please give them here.
+
+>> Please cite any offline or online sources you consulted while
+>> preparing your submission, other than the Pintos documentation, course
+>> text, lecture notes, and course staff.
+
+			   ARGUMENT PASSING
+			   ================
+
+---- DATA STRUCTURES ----
+
+>> A1: Copy here the declaration of each new or changed `struct' or
+>> `struct' member, global or static variable, `typedef', or
+>> enumeration.  Identify the purpose of each in 25 words or less.
+
+
+We modified process_execute and process_load - we did not need to change any structs or add any global or static variables.
+This following variable is in process_load and could have been made global, but we did not see the need to do so.
+int args[100]; - Limits the number of arguments a program can take for memory allocation reasons
+
+
+---- ALGORITHMS ----
+
+>> A2: Briefly describe how you implemented argument parsing.  How do
+>> you arrange for the elements of argv[] to be in the right order?
+>> How do you avoid overflowing the stack page?
+
+
+We parsed up the arguments into their individual file names before inserting them onto the stack.
+
+Initially we were inserting the arguments onto the stack in reverse order. This was the first attempt, we are no longer doing this.
+Now, before we insert into the stack, we traverse the character array backwards so we read the arguments in the correct order. Then we can push the arguments in the correct order. As listed before, we limit the arguments too 100. Then a pointer to the start of argv is pushed, argc, and the void return value.
+
+The arguments of argv[] are simply arranged by counting down the variable used
+to put the arguments on the stack in the first place. By only allowing 100
+arguments, the stack page will not overflow and will cause an array out of bound error.
+
+After parsing the arguments we push them to the stack.  We do this by iterating through the list of arguments and for each argument we count the number of characters present.  Now, as we copy the arguments into the stack we know exactly how much space each argument will occupy.
+
+
+---- RATIONALE ----
+
+>> A3: Why does Pintos implement strtok_r() but not strtok()?
+
+
+strtok() is not thread-safe, since its implementation makes use of static
+variables which are reused in each subsequent call. This means that if two
+threads were calling strtok() simultaneously, the behaviour of strtok() would
+be undefined, and could lead to one thread accessing a string owned by a
+different thread.
+
+strtok_r() is a re-entrant method due to its third argument, and is therefore
+thread-safe.
+
+Since Pintos is a multi-threaded environment, strtok_r() is implemented, but not
+strtok().
+
+
+>> A4: In Pintos, the kernel separates commands into a executable name
+>> and arguments.  In Unix-like systems, the shell does this
+>> separation.  Identify at least two advantages of the Unix approach.
+
+
+This allows the shell to be more advanced - piping arguments from one program to
+another and having multiple directories of binary files that are easy to use
+with the PATH variable. Its also probably more secure, as less work in the 
+kernel usually is.
+
+One main advantage to the UNIX approach is that it allows the shell to be more
+advanced, with features such as tab-completion, piping (|), redirection
+(<, >, <<, >>) and the execution of many binaries spread across multiple
+directories due to the PATH variable.
+
+Another advantage to the UNIX approach is that the code for parsing user input
+is written in the shell. Not only does this make kernel code much cleaner and
+less complex, but it also means that all user input-parsing code is run in
+user space as opposed to kernel space, which offers security benefits.
+
+
+			     SYSTEM CALLS
+			     ============
+
+---- DATA STRUCTURES ----
+
+>> B1: Copy here the declaration of each new or changed `struct' or
+>> `struct' member, global or static variable, `typedef', or
+>> enumeration.  Identify the purpose of each in 25 words or less.
+
+In process.c
+{
+	struct lock brink; - A lock for our waiter semaphores
+	struct condition loadsuccess; - Condition variable to keep track of whether or not we are loading correctly - Error checking essentially
+	struct semaphore sChild; - Signal to all waiting parents that sigchild has died and is the deceased child
+	int a[300]; - Represents the process number
+	int b[300]; - Represents the exitStatus corresponding to each process number in a[300]
+}
+
+In syscall.c
+{
+	struct semaphore IO; - Used to lock around filesys calls.
+}
+
+In thread.h
+{
+	In struct_thread
+	{
+		struct file *myself; - Used to store the open files. Whenever a file is denied a write, the file is held here until closed.
+		struct file *open_files[128]; - Allows us to store up to 128 open files and we can traverse thorugh this list using the fd.
+		int exitStatus; - Gives us the value of a terminated process
+		int ProcessLoaded; - Did the process load correctly. This is a boolean
+	}
+}
+
+
+>> B2: Describe how file descriptors are associated with open files.
+>> Are file descriptors unique within the entire OS or just within a
+>> single process?
+
+
+File descriptors describe which file is being accessed in the open files list.
+We have an open_files list and the fd allows us to know which file we should be accessing. File descriptors are unique to a single process....they define which file is open in our case. When a process opens a file, a file descriptor structure is added to that thread. 
+
+
+---- ALGORITHMS ----
+
+>> B3: Describe your code for reading and writing user data from the
+>> kernel.
+
+
+From the syscall_handler, the syscall value is read which determines which system call is called. Our syscall_read implementation tests the amount of data to be read for a zero value. We then acquire our filelock and test for the sources where data will be read from and handle appropriately whether STDIN (read from keyboard with input_getc()) or STDOUT (exit (-1)). We then test that the buffer location in memory is in the userspace. Lastly we add the case of reading from a file with the passed in fd argument. We return the the value returned by the file_read() function if none of the error cases occur.
+
+
+>> B4: Suppose a system call causes a full page (4,096 bytes) of data
+>> to be copied from user space into the kernel.  What is the least
+>> and the greatest possible number of inspections of the page table
+>> (e.g. calls to pagedir_get_page()) that might result?  What about
+>> for a system call that only copies 2 bytes of data?  Is there room
+>> for improvement in these numbers, and how much?
+
+
+In our implementation, the if statements call pagedir_get_page() to
+ensure that a pointer points to a page belonging to the current thread.
+
+The read and write system calls call pagedir_get_page () on both the start and end
+of the buffer (which is calculated by buffer + size/length) to protect against
+the case where the start of the buffer is in user virtual address space, but the
+end of the buffer belongs to the kernel virtual address space.
+
+This means that, no matter how much data is being copied into the kernel, 2
+calls to pagedir_get_page() are made. This can be improved since the second call to pagedir_get_page() is only strictly required when the data spans across multiple pages. This could be detected using modulo arithmetic since we know the exact size of a page, and the second call to pagedir_get_page could be avoided in many cases.
+
+
+>> B5: Briefly describe your implementation of the "wait" system call
+>> and how it interacts with process termination.
+
+
+Our implementation of "wait" (sysWait) calls process_wait(). This function calls get_thread() (Which was created by us during this project) to find the thread by the tid_t passed into process_wait(). 
+If there are any children in the deceased list, the parent process takes the child out of the deceased list and returns the status of the child (how the child died). If the parent calls sysWait and its child is still not deceased, the parent is put to sleep and must wait for funeral_service to wake it up. It calls wait_for_funeral to put itself to sleep until notified of the funeral_service.
+
+
+>> B6: Any access to user program memory at a user-specified address
+>> can fail due to a bad pointer value.  Such accesses must cause the
+>> process to be terminated.  System calls are fraught with such
+>> accesses, e.g. a "write" system call requires reading the system
+>> call number from the user stack, then each of the call's three
+>> arguments, then an arbitrary amount of user memory, and any of
+>> these can fail at any point.  This poses a design and
+>> error-handling problem: how do you best avoid obscuring the primary
+>> function of code in a morass of error-handling?  Furthermore, when
+>> an error is detected, how do you ensure that all temporarily
+>> allocated resources (locks, buffers, etc.) are freed?  In a few
+>> paragraphs, describe the strategy or strategies you adopted for
+>> managing these issues.  Give an example.
+
+
+The core of our error handling is a few if statements inside
+syscall.c. Inside syscall_handler, before calling any system calls, we check if that stackpointer is pointing to invalid places in memory or if it is passing in valid/inlvalid system calls. If it is, we call exit(-1) so that the process does not try to call one of our system calls.
+
+To make our code as readable as possible, each system call is implemented in
+a separate method. These methods are called by a chain of CASE statements inside
+syscall_handler, which checks that each of the arguments is safe before
+dereferencing the stack pointer and passing them. This means that the individual 
+methods can assume that their arguments are safe as a precondition. However, in
+the case where an argument to a system call is itself a pointer (such as the
+buffer in a read system call, or the string filename in open) it is the method's
+own responsibility to ensure safety. Again, this is done with the same preconditions as used at the top of the syscall_handler
+
+Since our error checks call exit (-1) in its error case, we can rely on the
+exit system call to clean up any temporarily-allocated resources before it calls
+thread_exit(). This involves calling the close system call on each of the
+thread's open fds (implemented using a thread struct's open_fd list). All of this is accounted for in sysExit, the function we wrote in syscall
+
+
+---- SYNCHRONIZATION ----
+
+>> B7: The "exec" system call returns -1 if loading the new executable
+>> fails, so it cannot return before the new executable has completed
+>> loading.  How does your code ensure this?  How is the load
+>> success/failure status passed back to the thread that calls "exec"?
+
+
+Our "exec" system call (sysExec) first checks to make sure the pointer being passed in is valid. If it is not, we call sysExit(-1). We then call process_execute which creates a new thread to run the executable. Once the thread is completed, we wait on the thread to complete by checking the thread status and loadsuccess, waiting if the return_code is invalid until the thread completes using a helper function, wait_for_loadsuccess
+
+
+>> B8: Consider parent process P with child process C.  How do you
+>> ensure proper synchronization and avoid race conditions when P
+>> calls wait(C) before C exits?  After C exits?  How do you ensure
+>> that all resources are freed in each case?  How about when P
+>> terminates without waiting, before C exits?  After C exits?  Are
+>> there any special cases?
+
+
+If wait is called before C exits then the condition variable loadsuccess and wait_for_loadsuccess 
+functions are used to ensure synchronization. The lock associated with the 
+condition variable is acquired and released before any cond_wait or cond_signal 
+calls are made, to ensure that only one child can signal the parent at once. If 
+wait is called after C exits, then we will never enter the while loop in 
+process_wait() since the call to get_thread() will return NULL.
+
+
+---- RATIONALE ----
+
+>> B9: Why did you choose to implement access to user memory from the
+>> kernel in the way that you did?
+
+
+The choices we made were to prevent users from accessing memory which was not in userspace.  So, as requests for memory were received we first check if the request is for memory within the userspace boundary and if not we immediately call sysExit(-1) which sets the return code and safely exits the process.  We do this to protect the system from possible kernel panics.
+
+
+>> B10: What advantages or disadvantages can you see to your design
+>> for file descriptors?
+
+
+Disadvantages: We limit ourselves to 128 open files in our array
+Advantage: It is very simple to implement and allows for easy storage
+
+
+>> B11: The default tid_t to pid_t mapping is the identity mapping.
+>> If you changed it, what advantages are there to your approach?
+
+
+We used the default identity mapping between tids and pids. Since a thread can 
+only ever have one process and each process has a unique tid there is no need to 
+have a complex mapping between the two. If tids and pids were separate we could have used hyperthreading though.
+
+
+			   SURVEY QUESTIONS
+			   ================
+
+Answering these questions is optional, but it will help us improve the
+course in future semesters.  Feel free to tell us anything you
+want--these questions are just to spur your thoughts.  You may also
+choose to respond anonymously in the course evaluations at the end of
+the semester.
+
+>> In your opinion, was this assignment, or any one of the three problems
+>> in it, too easy or too hard?  Did it take too long or too little time?
+
+>> Did you find that working on a particular part of the assignment gave
+>> you greater insight into some aspect of OS design?
+
+>> Is there some particular fact or hint we should give students in
+>> future semesters to help them solve the problems?  Conversely, did you
+>> find any of our guidance to be misleading?
+
+>> Do you have any suggestions for the TAs to more effectively assist
+>> students, either for future semesters or the remaining projects?
+
+>> Any other comments?
